@@ -1,0 +1,3 @@
+CANbus.c:108:6:BMS_CAN_Tx	16	static
+CANbus.c:295:6:BMS_CAN_Rx	8	static
+CANbus.c:309:6:BMS_CAN_Config	48	static

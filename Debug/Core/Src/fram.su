@@ -1,0 +1,8 @@
+fram.c:13:6:WriteData_FRAM	32	static
+fram.c:19:9:ReadData_FRAM	40	static
+fram.c:27:6:WriteChar_FRAM	48	static
+fram.c:39:6:ReadChar_FRAM	40	static
+fram.c:48:6:WritemByte_FRAM	40	static
+fram.c:59:6:ReadmByte_FRAM	32	static
+fram.c:68:7:Read_latitude	24	static
+fram.c:88:7:Read_longitude	24	static
