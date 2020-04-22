@@ -73,7 +73,7 @@ float Pack_Cap=22.95;
 uint16_t LifeTime;
 uint8_t BATT_State;
 float persen_imbalance;
-
+//test git
 extern float AH_Consumption;
 
 extern float Suhu_T1,Suhu_T2,Suhu_T3,Suhu_T4;

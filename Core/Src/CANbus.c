@@ -120,7 +120,7 @@ void BMS_CAN_Tx()
 		{
 			vcell_15databyte[mn].m_uint16_t=vcell_15data_digi[mn];
 		}
-
+//test git
 //	if(Handshaking==1){
 		// CAN ID transmit #1
 		Tx_Header.ExtId = (0x0B0<<20|UNIQUE_Code);  //7b1
