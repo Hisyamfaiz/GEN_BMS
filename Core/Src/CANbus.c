@@ -101,9 +101,9 @@ float				OCC_protection,
 
 uint16_t			Cycle_batt=125;
 uint32_t 			UNIQUE_Code = 0xFFFF1;
-//uint8_t				Handshaking = 0,
-//					identified = 0,
-//					Delay_Charger = 0;
+uint8_t				Handshaking = 0,
+					identified = 0,
+					Delay_Charger = 0;
 
 void BMS_CAN_Tx()
 {
@@ -111,7 +111,7 @@ void BMS_CAN_Tx()
 		Batt_voltage.m_uint16_t=VBATT*100;
 		Batt_current.m_uint16_t=(IBATT+50)*100;
 		Batt_SOC.m_uint16_t=(int)Pack_SOC;
-		Batt_temp.m_uint16_t=(int)(((Suhu_T1+Suhu_T2)/2)+40)*10;
+		Batt_temp.m_uint16_t=(((Suhu_T1+Suhu_T2)/2.0)+40)*10;
 		Batt_capacity.m_uint16_t=Pack_Cap*100;
 		Batt_SOH.m_uint16_t=(int)SOH_batt;
 		Batt_cycle.m_uint16_t=LifeTime;
@@ -120,8 +120,8 @@ void BMS_CAN_Tx()
 		{
 			vcell_15databyte[mn].m_uint16_t=vcell_15data_digi[mn];
 		}
-//test git
-//	if(Handshaking==1){
+
+	if(Handshaking==1){
 		// CAN ID transmit #1
 		Tx_Header.ExtId = (0x0B0<<20|UNIQUE_Code);  //7b1
 		//CAN Data #1
@@ -249,7 +249,7 @@ void BMS_CAN_Tx()
 		i=1000;
 		while(i>1) i--;
 		// ******************************End Cell  Voltage Data Send**************************************
-/*	}
+	}
 	else {
 		// Handshaking with Charger
 		Delay_Charger+=1;
@@ -272,34 +272,58 @@ void BMS_CAN_Tx()
 			Delay_Charger=0;
 		}
 
-		if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &Rx_Header, Rx_data)== HAL_OK){
-
-			if(Rx_data[6]==0x55 && identified==0){
-				BMS_mode =2;
-				identified = 1;
-				Tx_Header.DLC = 8;
-				Tx_data[6] = 0xAA;
-
-				while(!HAL_CAN_GetTxMailboxesFreeLevel(&hcan));
-				if(HAL_CAN_AddTxMessage(&hcan, &Tx_Header, Tx_data, &TxMailbox)!= HAL_OK) Error_Handler();
-				i=1000;
-				while(i>1) i--;
-			}
-
-			if(Rx_data[6]==0xAA && identified==1){
-				Handshaking = 1;
-			}
-		}
-	}*/
+//		if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &Rx_Header, Rx_data)== HAL_OK){
+//
+//		}
+	}
 }
 
 void BMS_CAN_Rx()
 {
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &Rx_Header, Rx_data)== HAL_OK)
+	int i;
+	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &Rx_Header, Rx_data);
+
+	if(Rx_Header.StdId==0x0E2){
+		if(Rx_data[6]==0x55 && identified==0){
+			BMS_mode =2;
+			identified = 1;
+			Tx_Header.DLC = 8;
+			Tx_data[6] = 0xAA;
+
+			while(!HAL_CAN_GetTxMailboxesFreeLevel(&hcan));
+			if(HAL_CAN_AddTxMessage(&hcan, &Tx_Header, Tx_data, &TxMailbox)!= HAL_OK) Error_Handler();
+			i=1000;
+			while(i>1) i--;
+		}
+
+		if(Rx_data[6]==0xAA && identified==1){
+			Handshaking = 1;
+		}
+	}
 
 		if(Rx_Header.StdId==0x1B2){
-			flag_start_shutdown=Rx_data[0]&0x01;
-			BMS_mode=(Rx_data[0]>>1)&0x03;
+
+			if((Rx_data[0]&0x01) == 1)  //without handshake
+			{
+				flag_start_shutdown=1;
+				BMS_mode=(Rx_data[0]>>1)&0x03;
+				Handshaking=1; identified=1;
+			}
+
+			else if((Rx_data[7]&0x01) == 1) //with hs
+			{
+				flag_start_shutdown=1;
+				BMS_mode=0;
+			}
+
+			else if(Rx_data[1]==0 && Rx_data[7]==0)
+			{
+				BMS_mode=0;
+				Handshaking=0;
+				identified=0;
+				flag_start_shutdown=0;
+			}
+
 			Clear_Trip_overcurrentdischarge=(Rx_data[0]>>3)&&0x01;
 			Clear_Trip_undervoltage=(Rx_data[0]>>4)&&0x01;
 		}
