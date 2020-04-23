@@ -148,7 +148,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  //BMS_CAN_Config();
+  //BMS_CAN_Config();b
    HAL_FLASH_Unlock();
 
   /* USER CODE END SysInit */
