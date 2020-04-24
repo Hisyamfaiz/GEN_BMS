@@ -381,6 +381,11 @@ void TIM2_IRQHandler(void)
 	  Suhu_T3= -24.05*log(Res_T3) + 246.41;			//1 / a + b (Ln RT / R25) + c b (Ln RT / R25)2
 	  Res_T4=adc_val[5]*10000/(3900-adc_val[5]);
 	  Suhu_T4= -24.05*log(Res_T4) + 246.41;			//1 / a + b (Ln RT / R25) + c b (Ln RT / R25)2
+
+	  if(Suhu_T1>=130) Suhu_T1 = 130;
+	  if(Suhu_T2>=130) Suhu_T2 = 130;
+	  if(Suhu_T3>=130) Suhu_T3 = 130;
+	  if(Suhu_T4>=130) Suhu_T4 = 130;
   }
 
   if(BATT_Start_Up==1)
@@ -410,12 +415,12 @@ void TIM2_IRQHandler(void)
 		  Clear_Trip_overcurrentdischarge=0;
 	  }
 	  // ---> Clearing OverTemperature
-	  if(flag_trip_overtemperature==ON && ((Suhu_T1<40)||(Suhu_T2<40)||(Suhu_T3<40)||(Suhu_T4<40)))
+	  if(flag_trip_overtemperature==ON && (Suhu_T1<40)&&(Suhu_T2<40)&&(Suhu_T3<40)&&(Suhu_T4<40))
 	  {
 		  flag_trip_overtemperature=OFF;
 	  }
 	  // ---> Clearing UnderTemperature
-	  if(flag_trip_undertemperature==ON && ((Suhu_T1>20)||(Suhu_T2>20)||(Suhu_T3>20)||(Suhu_T4>20)))
+	  if(flag_trip_undertemperature==ON && (Suhu_T1>20)&&(Suhu_T2>20)&&(Suhu_T3>20)&&(Suhu_T4>20))
 	  {
 		  flag_trip_undertemperature=OFF;
 	  }

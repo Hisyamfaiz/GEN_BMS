@@ -4384,7 +4384,7 @@ int main(void)
  8002500:	f000 f8f4 	bl	80026ec <SystemClock_Config>
 
   /* USER CODE BEGIN SysInit */
-  //BMS_CAN_Config();
+  //BMS_CAN_Config();b
    HAL_FLASH_Unlock();
  8002504:	f005 fec0 	bl	8008288 <HAL_FLASH_Unlock>
 
@@ -9944,7 +9944,7 @@ void TIM2_IRQHandler(void)
  8004c0e:	701a      	strb	r2, [r3, #0]
 	  }
 	  // ---> Clearing OverTemperature
-	  if(flag_trip_overtemperature==ON && ((Suhu_T1<40)||(Suhu_T2<40)||(Suhu_T3<40)||(Suhu_T4<40)))
+	  if(flag_trip_overtemperature==ON && (Suhu_T1<40)&&(Suhu_T2<40)&&(Suhu_T3<40)&&(Suhu_T4<40))
  8004c10:	4b83      	ldr	r3, [pc, #524]	; (8004e20 <TIM2_IRQHandler+0x630>)
  8004c12:	781b      	ldrb	r3, [r3, #0]
  8004c14:	2b01      	cmp	r3, #1
@@ -9956,7 +9956,7 @@ void TIM2_IRQHandler(void)
  8004c20:	f7fc fa4e 	bl	80010c0 <__aeabi_fcmplt>
  8004c24:	4603      	mov	r3, r0
  8004c26:	2b00      	cmp	r3, #0
- 8004c28:	d11a      	bne.n	8004c60 <TIM2_IRQHandler+0x470>
+ 8004c28:	d01d      	beq.n	8004c66 <TIM2_IRQHandler+0x476>
  8004c2a:	4b80      	ldr	r3, [pc, #512]	; (8004e2c <TIM2_IRQHandler+0x63c>)
  8004c2c:	681b      	ldr	r3, [r3, #0]
  8004c2e:	497e      	ldr	r1, [pc, #504]	; (8004e28 <TIM2_IRQHandler+0x638>)
@@ -9964,7 +9964,7 @@ void TIM2_IRQHandler(void)
  8004c32:	f7fc fa45 	bl	80010c0 <__aeabi_fcmplt>
  8004c36:	4603      	mov	r3, r0
  8004c38:	2b00      	cmp	r3, #0
- 8004c3a:	d111      	bne.n	8004c60 <TIM2_IRQHandler+0x470>
+ 8004c3a:	d014      	beq.n	8004c66 <TIM2_IRQHandler+0x476>
  8004c3c:	4b6c      	ldr	r3, [pc, #432]	; (8004df0 <TIM2_IRQHandler+0x600>)
  8004c3e:	681b      	ldr	r3, [r3, #0]
  8004c40:	4979      	ldr	r1, [pc, #484]	; (8004e28 <TIM2_IRQHandler+0x638>)
@@ -9972,7 +9972,7 @@ void TIM2_IRQHandler(void)
  8004c44:	f7fc fa3c 	bl	80010c0 <__aeabi_fcmplt>
  8004c48:	4603      	mov	r3, r0
  8004c4a:	2b00      	cmp	r3, #0
- 8004c4c:	d108      	bne.n	8004c60 <TIM2_IRQHandler+0x470>
+ 8004c4c:	d00b      	beq.n	8004c66 <TIM2_IRQHandler+0x476>
  8004c4e:	4b6b      	ldr	r3, [pc, #428]	; (8004dfc <TIM2_IRQHandler+0x60c>)
  8004c50:	681b      	ldr	r3, [r3, #0]
  8004c52:	4975      	ldr	r1, [pc, #468]	; (8004e28 <TIM2_IRQHandler+0x638>)
