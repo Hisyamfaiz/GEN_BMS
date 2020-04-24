@@ -100,7 +100,7 @@ float				OCC_protection,
 					Balancing_protection;
 
 uint16_t			Cycle_batt=125;
-uint32_t 			UNIQUE_Code = 0xFFFF1;
+uint32_t 			UNIQUE_Code = 0xFFFF2;
 uint8_t				Handshaking = 0,
 					identified = 0,
 					Delay_Charger = 0;
