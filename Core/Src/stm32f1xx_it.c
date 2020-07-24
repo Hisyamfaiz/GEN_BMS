@@ -64,11 +64,13 @@ float v_datadigi,i_datadigi,vn_datadigi,ref_datadigi;
 uint16_t i_arrdata[maxdata],ref_arrdata[maxdata];
 float VBATT, IBATT;
 
+float Isc, Vsc;
 float sum_current;
-float AH_Consumption;
+float AH_Consumption, AH_Total=0;
 uint16_t time_soc;
+uint32_t cek_CC=0;
 
-extern float Pack_SOC, Delta_VCell,Bat_Pow_Out;
+extern float Pack_SOC, SOC_manipulasi, Delta_VCell,Bat_Pow_Out;
 extern float Pack_Cap;
 extern uint16_t LifeTime;
 extern uint8_t BATT_State;
@@ -95,8 +97,8 @@ float T_I_Over_trip,
 	  T_I_Over_trip_cycle;
 
 
-float I_Over_Set=10.9,
-	  I_Over_Set_Charge=7,
+float I_Over_Set=12,
+	  I_Over_Set_Charge=8,
 	  Temp_Over_Set=55,
 	  Temp_Under_Set=15,
 	  SOC_Under_Set=10,
@@ -104,6 +106,10 @@ float I_Over_Set=10.9,
 	  V_Under_Set=39.5,
 	  V_Over_Set=65,
 	  Persen_Imbalance_Set=30;
+
+float	batas_atas = 85,
+		batas_bawah = 15,
+		grad,constanta;
 
 uint8_t 		flag_trip_overtemperature,
 					flag_trip_undertemperature,
@@ -304,31 +310,17 @@ void DMA1_Channel1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles CAN RX1 interrupt.
+  * @brief This function handles USB low priority or CAN RX0 interrupts.
   */
-void CAN1_RX1_IRQHandler(void)
+void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-  /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
 
-  /* USER CODE END CAN1_RX1_IRQn 0 */
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan);
-  /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
 
-  /* USER CODE END CAN1_RX1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles CAN SCE interrupt.
-  */
-void CAN1_SCE_IRQHandler(void)
-{
-  /* USER CODE BEGIN CAN1_SCE_IRQn 0 */
-
-  /* USER CODE END CAN1_SCE_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan);
-  /* USER CODE BEGIN CAN1_SCE_IRQn 1 */
-
-  /* USER CODE END CAN1_SCE_IRQn 1 */
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
 }
 
 /**
@@ -362,13 +354,20 @@ void TIM2_IRQHandler(void)
   VBATT=v_cell_tot;
   if(VBATT<0) VBATT=-1;
 
-//	IBATT = -0.06189346733668010*i_datadigi + 121.153903517579 - OFFSET_SENSOR_ARUS; //modul A
-//  IBATT_for_offset_cal = -0.06189346733668010*i_datadigi + 121.153903517579;
-//  IBATT=0.95556329728489100*IBATT + 0.06243330788446070;// Modul A Recalibrate
+  if(UNIQUE_Code == 0xAAAA1){
+	  IBATT = -0.06309346733668010*i_datadigi + 121.153903517579 - OFFSET_SENSOR_ARUS; //modul A fix
+	  IBATT_for_offset_cal = -0.06309346733668010*i_datadigi + 121.153903517579;
+//	  IBATT=0.95556329728489100*IBATT + 0.06243330788446070;// Modul A Recalibrate
+  }
+  else if (UNIQUE_Code == 0xBBBB1){
+	  IBATT=-0.0399033588118257*i_datadigi + 77.0576930186035 - OFFSET_SENSOR_ARUS; // Modul B fix
+	  IBATT_for_offset_cal= -0.0399033588118257*i_datadigi + 77.0576930186035;
+//	  IBATT = 0.78010345267720400*IBATT + 0.02604389098500030; //recalibrate module B
+  }
 
 
-  IBATT=-0.0399633588118257*i_datadigi + 77.3576930186035- OFFSET_SENSOR_ARUS; // Modul B
-  IBATT_for_offset_cal= -0.0399633588118257*i_datadigi + 77.3576930186035;
+
+
 
   if(hitung_suhu>=max_hitung_suhu)
   {
@@ -415,7 +414,7 @@ void TIM2_IRQHandler(void)
 		  Clear_Trip_overcurrentdischarge=0;
 	  }
 	  // ---> Clearing OverTemperature
-	  if(flag_trip_overtemperature==ON && (Suhu_T1<40)&&(Suhu_T2<40)&&(Suhu_T3<40)&&(Suhu_T4<40))
+	  if(flag_trip_overtemperature==ON && (Suhu_T1<40)&&(Suhu_T2<50)&&(Suhu_T3<40)&&(Suhu_T4<50))
 	  {
 		  flag_trip_overtemperature=OFF;
 	  }
@@ -445,10 +444,16 @@ void TIM2_IRQHandler(void)
 	  sum_current+=IBATT;
 	  if(time_soc>999)
 	  {
-		  AH_Consumption = (-1*sum_current/1000*(1.0/3600.0))/Pack_Cap*100-(4e-5); //Konsumsi System 4e-5
+		  AH_Consumption = (-1*sum_current/1000*(1.0/3600.0))/Pack_Cap*100; //Konsumsi System 4e-5
+		  AH_Total = AH_Total + (sum_current/3600);
 		  Pack_SOC=Pack_SOC+AH_Consumption;
 		  time_soc=0;
 		  sum_current=0;
+		  cek_CC++;
+
+		  grad=(100-0)/(batas_atas-batas_bawah);
+		  constanta=grad*batas_bawah*(-1);
+		  SOC_manipulasi=grad*Pack_SOC+constanta;
 	  }
   }
   /* USER CODE END TIM2_IRQn 1 */
@@ -468,7 +473,7 @@ void TIM3_IRQHandler(void)
   {
 	  BMS_CAN_Tx();
   }
-  BMS_CAN_Rx();
+//  BMS_CAN_Rx();
   /* USER CODE END TIM3_IRQn 1 */
 }
 
@@ -478,6 +483,8 @@ void Batt_Protection_when_discharge(void)
 	///////////////////// Short Circuit //////////////////////////////////////
 			  	  if(IBATT>(VBATT/0.9))
 	 		  	  {
+			  		  Isc=IBATT;
+			  		  Vsc=VBATT;
 	 		  		  fault_code=12;
 	 		  		  Batt_Open_Mode();
 	 		  		  flag_trip_shortcircuit=ON;
@@ -675,7 +682,7 @@ void Batt_Protection_when_discharge(void)
 			  	///////// Imbalance Checking Status
 			  	  else if(Persen_Imbalance_Set-persen_imbalance<10)
 			  	  {
-			  		  fault_code=9;
+			  		  fault_code=6;
 			  		  if(persen_imbalance>Persen_Imbalance_Set)
 			  		  {
 			  			flag_trip_unbalance=ON;
@@ -705,6 +712,8 @@ void Batt_Protection_when_charge(void)
 					///////////////////// Short Circuit //////////////////////////////////////
 					if(fabs(IBATT)>VBATT)
 				  	{
+						Isc=IBATT;
+			  		  	Vsc=VBATT;
 				  		fault_code=12;
 				  		Batt_Open_Mode();
 				  		flag_trip_shortcircuit=ON;
@@ -714,7 +723,7 @@ void Batt_Protection_when_charge(void)
 					/////////**************Pengecekan OverCharge****************************//
 					else if(SOC_Over_Set-Pack_SOC<=10 && flag_trip_SOCOverCharge==OFF)
 					{
-			  		  fault_code=6;
+			  		  fault_code=7;
 			  		  if(Pack_SOC>SOC_Over_Set)
 			  		  {
 			  				  Batt_Open_Mode();
@@ -724,10 +733,10 @@ void Batt_Protection_when_charge(void)
 			  	  	}
 
 			  		//**************Pengecekan OverTemperature ****************************//
-			  		else if(((45-Suhu_T1<5)||(75-Suhu_T2<10)||(45-Suhu_T3<5)||(75-Suhu_T4<10)) && (flag_trip_overtemperature==OFF)) // Warning Over Temperature Charge 40 65 40 65
+			  		else if(((45-Suhu_T1<5)||(80-Suhu_T2<10)||(45-Suhu_T3<5)||(80-Suhu_T4<10)) && (flag_trip_overtemperature==OFF)) // Warning Over Temperature Charge 40 65 40 65
 			  		{
-			  			  fault_code=7;
-			  			  if((Suhu_T1>45)||(Suhu_T2>75)||(Suhu_T3>45)||(Suhu_T4>75))
+			  			  fault_code=8;
+			  			  if((Suhu_T1>45)||(Suhu_T2>80)||(Suhu_T3>45)||(Suhu_T4>80))
 			  			  {
 			  				  	  Batt_Open_Mode();
 			  				  	  flag_trip_overtemperature=ON;
@@ -738,7 +747,7 @@ void Batt_Protection_when_charge(void)
 			  		//**************Pengecekan UnderTemperature ****************************//
 			  		else if((Suhu_T1-Temp_Under_Set<=10||Suhu_T2-Temp_Under_Set<=10||Suhu_T3-Temp_Under_Set<=10||Suhu_T4-Temp_Under_Set<=10) && flag_trip_undertemperature==OFF)
 			  		{
-			  			  fault_code=8;
+			  			  fault_code=9;
 			  			  if(Suhu_T1<=Temp_Under_Set+10 && Suhu_T1>Temp_Under_Set+5)
 			  			  {
 			  				  if((test_tim2%1000)==0)

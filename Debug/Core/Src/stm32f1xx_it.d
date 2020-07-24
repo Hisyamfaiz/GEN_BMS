@@ -1,6 +1,7 @@
-Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
+Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- ../Core/Inc/stm32f1xx_hal_conf.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_hal_conf.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h \
@@ -29,17 +30,22 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/stm32f1xx_it.h ../Core/Inc/gpio.h ../Core/Inc/main.h \
- ../Core/Inc/Battery_Charge_Discharge.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_it.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/gpio.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/Battery_Charge_Discharge.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Core/Inc/CANbus.h ../Core/Inc/fonts.h ../Core/Inc/ssd1306.h \
- ../Core/Inc/i2c.h ../Core/Inc/can.h
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/CANbus.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/fonts.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/ssd1306.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/i2c.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/can.h
 
-../Core/Inc/main.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
-../Core/Inc/stm32f1xx_hal_conf.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_hal_conf.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 
@@ -97,22 +103,22 @@ C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/S
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 
-../Core/Inc/stm32f1xx_it.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_it.h:
 
-../Core/Inc/gpio.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/gpio.h:
 
-../Core/Inc/main.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h:
 
-../Core/Inc/Battery_Charge_Discharge.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/Battery_Charge_Discharge.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/DSP/Include/arm_math.h:
 
-../Core/Inc/CANbus.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/CANbus.h:
 
-../Core/Inc/fonts.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/fonts.h:
 
-../Core/Inc/ssd1306.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/ssd1306.h:
 
-../Core/Inc/i2c.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/i2c.h:
 
-../Core/Inc/can.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/can.h:

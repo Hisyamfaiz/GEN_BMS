@@ -11,12 +11,17 @@
 #include "math.h"
 #include "main.h"
 
+#if (UNIQUE_Code == 0xAAAA1)
+float minus_offset[15]={512-70,512+140,512-700,512-600,512-700,512-100,512,512-500,512-500,512-500,512,512+140,512-560,512-560,512-600}; //modul A
+#else
+float minus_offset[15]={500,840,-40,-40,-100,540,830,20,-130,-120,560,880,-30,-110,-140}; //modul B
+#endif
+
 extern uint8_t cmd1[4];
 uint8_t cmd2[2];
 extern uint8_t cmd_out[8];
 
 extern uint32_t cmd32;
-
 const uint16_t crc15Table[256] = {0x0,0xc599, 0xceab, 0xb32, 0xd8cf, 0x1d56, 0x1664, 0xd3fd, 0xf407, 0x319e, 0x3aac,  //!<precomputed CRC15 Table
                                 0xff35, 0x2cc8, 0xe951, 0xe263, 0x27fa, 0xad97, 0x680e, 0x633c, 0xa6a5, 0x7558, 0xb0c1,
                                 0xbbf3, 0x7e6a, 0x5990, 0x9c09, 0x973b, 0x52a2, 0x815f, 0x44c6, 0x4ff4, 0x8a6d, 0x5b2e,
@@ -51,11 +56,10 @@ uint16_t balance_status;
 float delta_vbatt[15];
 
 float Cell_Voltage_Lowest;
-//float minus_offset[15]={512-70,512+140,512-700,512-600,512-700,512-100,512,512-500,512-500,512-500,512,512+140,512-560,512-560,512-600}; //modul A
-float minus_offset[15]={500,840,-40,-40,-100,540,830,20,-130,-120,560,880,-30,-110,-140}; //modul B
 void ltc6812_GPIO_Config(void);
 void ltc6812_SPIInit(void);
 void ltc6812_Delay(volatile uint32_t nCount);
+
 
 void ltc6812_GPIO_Config(void)
 {
@@ -89,7 +93,6 @@ void ltc6812_GPIO_Config(void)
 
 void ltc6812_SPIInit(void)
 {
-
 	ltc6812_CS_SET(ltc6812_CS_PIN);
 	ltc6812_RESET_HIGH;
 	ltc6812_Delay(10);

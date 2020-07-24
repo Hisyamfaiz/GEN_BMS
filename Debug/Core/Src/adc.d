@@ -1,6 +1,8 @@
-Core/Src/adc.o: ../Core/Src/adc.c ../Core/Inc/adc.h ../Core/Inc/main.h \
+Core/Src/adc.o: ../Core/Src/adc.c \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/adc.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- ../Core/Inc/stm32f1xx_hal_conf.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_hal_conf.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h \
@@ -30,13 +32,13 @@ Core/Src/adc.o: ../Core/Src/adc.c ../Core/Inc/adc.h ../Core/Inc/main.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 
-../Core/Inc/adc.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/adc.h:
 
-../Core/Inc/main.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
-../Core/Inc/stm32f1xx_hal_conf.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_hal_conf.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 

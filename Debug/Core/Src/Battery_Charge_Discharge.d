@@ -1,7 +1,8 @@
 Core/Src/Battery_Charge_Discharge.o: \
- ../Core/Src/Battery_Charge_Discharge.c ../Core/Inc/main.h \
+ ../Core/Src/Battery_Charge_Discharge.c \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
- ../Core/Inc/stm32f1xx_hal_conf.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_hal_conf.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h \
@@ -30,16 +31,23 @@ Core/Src/Battery_Charge_Discharge.o: \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/can.h ../Core/Inc/dma.h \
- ../Core/Inc/i2c.h ../Core/Inc/iwdg.h ../Core/Inc/spi.h ../Core/Inc/tim.h \
- ../Core/Inc/usart.h ../Core/Inc/gpio.h \
- ../Core/Inc/Battery_Charge_Discharge.h
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/adc.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/can.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/dma.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/i2c.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/iwdg.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/spi.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/tim.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/usart.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/gpio.h \
+ C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/Battery_Charge_Discharge.h
 
-../Core/Inc/main.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
-../Core/Inc/stm32f1xx_hal_conf.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/stm32f1xx_hal_conf.h:
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
 
@@ -97,24 +105,24 @@ C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/S
 
 C:/Users/Moh\ Hisyam\ Faiz/STM32Cube/Repository/STM32Cube_FW_F1_V1.8.0/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 
-../Core/Inc/adc.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/adc.h:
 
-../Core/Inc/main.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/main.h:
 
-../Core/Inc/can.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/can.h:
 
-../Core/Inc/dma.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/dma.h:
 
-../Core/Inc/i2c.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/i2c.h:
 
-../Core/Inc/iwdg.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/iwdg.h:
 
-../Core/Inc/spi.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/spi.h:
 
-../Core/Inc/tim.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/tim.h:
 
-../Core/Inc/usart.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/usart.h:
 
-../Core/Inc/gpio.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/gpio.h:
 
-../Core/Inc/Battery_Charge_Discharge.h:
+C:/Users/Moh\ Hisyam\ Faiz/STM32CubeIDE/workspace_1.3.0/stm32f103rbt_adc/Core/Inc/Battery_Charge_Discharge.h:

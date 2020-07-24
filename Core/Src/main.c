@@ -36,6 +36,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
+#include <ctype.h>
 #include "Battery_Charge_Discharge.h"
 #include "CANbus.h"
 #include "powermeter_ade7880.h"
@@ -62,19 +63,19 @@
 /* USER CODE BEGIN PV */
 uint16_t adc_val[8];
 
-char pesan[20];
+char pesan[20], lower_UNIQUE_Code[20], UPPER_UNIQUE_Code[20];
 
 int test_tim2;
 extern float v_datadigi,i_datadigi,vn_datadigi,ref_datadigi;
 extern float VBATT, IBATT;
 
-float Pack_SOC, Delta_VCell,Bat_Pow_Out;
+float Pack_SOC,	SOC_manipulasi, Delta_VCell,Bat_Pow_Out;
 float Pack_Cap=22.95;
 uint16_t LifeTime;
 uint8_t BATT_State;
 float persen_imbalance;
 //test git
-extern float AH_Consumption;
+extern float AH_Consumption, AH_Total;
 
 extern float Suhu_T1,Suhu_T2,Suhu_T3,Suhu_T4;
 
@@ -84,7 +85,10 @@ extern uint8_t flag_trip_undervoltage;
 extern uint8_t flag_trip_overtemperature;
 
 extern float T_I_Over_trip,
-			T_I_Over_trip_cycle;
+			T_I_Over_trip_cycle,
+			Isc,Vsc;
+extern float SOC_manipulasi;
+extern uint32_t cek_CC;
 
 char buffer_uart[512];
 
@@ -105,6 +109,8 @@ uint8_t Flag_Battery_Locked_for_Ship,Flag_Force_Balance;
 uint8_t flag_start_shutdown, BMS_mode;
 
 uint8_t cmd4[2];
+
+extern float minus_offset[15];
 
 extern float OFFSET_SENSOR_ARUS,IBATT_for_offset_cal;
 /* USER CODE END PV */
@@ -148,7 +154,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  //BMS_CAN_Config();b
+  //BMS_CAN_Config();
    HAL_FLASH_Unlock();
 
   /* USER CODE END SysInit */
@@ -207,6 +213,7 @@ int main(void)
 	  else						BMS_ScreenMode_Standby();			//Mode Standby
 
 	  HAL_IWDG_Refresh(&hiwdg);
+	  read_v_15cell(vcell_15data_digi, vcell_15data);
 
 	  if(flag_start_shutdown==1)
 	  {
@@ -214,7 +221,7 @@ int main(void)
 		  	  if(BATT_State==STATE_CHARGE)
 		  	  {
 		  		 // LTC681x_MUTE_UNMUTE_emul(1);
-		  		  read_v_15cell(vcell_15data_digi, vcell_15data);
+//		  		  read_v_15cell(vcell_15data_digi, vcell_15data);
 		  		  //LTC681x_MUTE_UNMUTE_emul(0);
 		  	  }
 		  	  else read_v_15cell(vcell_15data_digi, vcell_15data);
@@ -296,6 +303,12 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void BMS_ON_InitBeep(void)
 {
+	itoa(UNIQUE_Code, lower_UNIQUE_Code, 16);
+	int ii=0;
+	while(ii<6){
+		UPPER_UNIQUE_Code[ii] = toupper(lower_UNIQUE_Code[ii]);
+		ii++;
+	}
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t *) &adc_val, 6);
 
 	SSD1306_Init();
@@ -328,6 +341,7 @@ void BMS_ON_InitBeep(void)
 
 	BATT_State=STATE_STANDBY;
 	Batt_Open_Mode();
+	AH_Total=0;
 
 
 }
@@ -386,13 +400,13 @@ void BMS_ScreenMode_RUN(void)
 
 		if(BATT_State==STATE_CHARGE)
 		{
-			sprintf(pesan,"BMS-RUN (Charge)");
+			sprintf(pesan,"RUN (C) - %s", UPPER_UNIQUE_Code);
 			SSD1306_GotoXY(0,0);
 			SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
 		}
 		else if(BATT_State==STATE_DISCHARGE)
 		{
-			sprintf(pesan,"BMS-RUN (Discharge)");
+			sprintf(pesan,"RUN (D) - %s", UPPER_UNIQUE_Code);
 			SSD1306_GotoXY(0,0);
 			SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
 		}
@@ -415,15 +429,15 @@ void BMS_ScreenMode_RUN(void)
 		sprintf(pesan,"T=%3.0f|%3.0f|%3.0f|%3.0f",Suhu_T1,Suhu_T2,Suhu_T3,Suhu_T4);
 		SSD1306_GotoXY(0,20);
 		SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
-		sprintf(pesan,"C=%5.1f%c -- %d",Pack_SOC,'%',BMS_mode);
+		sprintf(pesan,"C=%5.1f%%--%5.1f%%",Pack_SOC,SOC_manipulasi);
 		SSD1306_GotoXY(0,30);
 		SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
-		sprintf(pesan,"B=%5d, %5.2f",balance_status,persen_imbalance);
+		sprintf(pesan,"B=%5d, %4.1f-%4.2f",balance_status,persen_imbalance, OFFSET_SENSOR_ARUS);
 		SSD1306_GotoXY(0,40);
 		SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
 
 
-		sprintf(pesan,"%d-%d -- %4.0f-%4.0f",fault_code,last_fault_code,T_I_Over_trip,T_I_Over_trip_cycle);
+		sprintf(pesan,"%d-%d-- %4.2f | %4.0f",fault_code,last_fault_code,Isc, AH_Total);
 		SSD1306_GotoXY(0,50);
 		SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
 
@@ -481,10 +495,17 @@ void BMS_ScreenMode_ForceBalance(void)
 
 void Calc_vcell_tot(void)
 {
-	for(ij=0,v_cell_tot=0;ij<15;ij++)
+	float v_cell_temporary;
+	for(ij=0;ij<15;ij++)
 	{
-		v_cell_tot+=vcell_15data[ij];
+		v_cell_temporary+=vcell_15data[ij];
 	}
+
+	if(v_cell_temporary>10)
+	{
+		v_cell_tot=v_cell_temporary;
+	}
+
 }
 /* USER CODE END 4 */
 

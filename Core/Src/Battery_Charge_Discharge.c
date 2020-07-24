@@ -21,6 +21,11 @@ extern uint8_t				charge_state,
 							discharge_state,
 							sleep_state;
 
+extern float	batas_atas,batas_bawah,
+				SOC_manipulasi,
+				grad,
+				constanta;
+
 void Batt_Discharge_Mode(void)
 {
 	if(flag_trip_undervoltage==ON||
@@ -117,6 +122,10 @@ void check_SOC_Based_OCV(void)
 {
 	//Pack_SOC=0.226863411166458*VBATT*VBATT-18.618705166771*VBATT+378.560621625972;   //Persamaan Baterai INR 21700
 	Pack_SOC=(147.471026094008*(VBATT/15.0) - 494.687746093127);  // Persamaan Baterai EVE ICR18650/26V
+
+	grad=(100-0)/(batas_atas-batas_bawah);
+	constanta=grad*batas_bawah*(-1);
+	SOC_manipulasi=grad*Pack_SOC+constanta;
 
 	if(Pack_SOC>130) Pack_SOC=100;
 	else if(Pack_SOC>100) Pack_SOC=100;
