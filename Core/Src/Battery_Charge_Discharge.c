@@ -35,7 +35,8 @@ void Batt_Discharge_Mode(void)
 			flag_trip_SOCOverDischarge==ON||
 			flag_trip_shortcircuit==ON||
 			flag_trip_unbalance==ON||
-			flag_trip_systemfailure==ON)
+			flag_trip_systemfailure==ON||
+			VBATT <= 48)
 	{
 		Batt_Open_Mode();
 	}
@@ -120,8 +121,21 @@ void Batt_Open_Mode(void)
 
 void check_SOC_Based_OCV(void)
 {
-	//Pack_SOC=0.226863411166458*VBATT*VBATT-18.618705166771*VBATT+378.560621625972;   //Persamaan Baterai INR 21700
-	Pack_SOC=(147.471026094008*(VBATT/15.0) - 494.687746093127);  // Persamaan Baterai EVE ICR18650/26V
+	if(VBATT <= 51.3){
+		Pack_SOC = 24.03846153846*(VBATT/15.0) - 77.18750000000;
+	}
+	else if(VBATT > 51.3 &&  VBATT <= 53.5){
+		Pack_SOC = 135.26698598540*(VBATT/15.0) - 458.27213056570;
+	}
+	else if(VBATT > 53.5 &&  VBATT <= 54.7){
+		Pack_SOC = 332.88158563421*(VBATT/15.0) - 1161.98331356855;
+	}
+	else if(VBATT > 54.7){
+		Pack_SOC = 111.42655038475*(VBATT/15.0) - 353.86053305809;
+	}
+
+//	Pack_SOC=0.226863411166458*VBATT*VBATT-18.618705166771*VBATT+378.560621625972;   //Persamaan Baterai INR 21700
+//	Pack_SOC=(147.471026094008*(VBATT/15.0) - 494.687746093127);  // Persamaan Baterai EVE ICR18650/26V
 
 	grad=(100-0)/(batas_atas-batas_bawah);
 	constanta=grad*batas_bawah*(-1);

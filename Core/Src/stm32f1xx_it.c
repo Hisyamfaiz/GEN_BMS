@@ -101,7 +101,7 @@ float I_Over_Set=12,
 	  I_Over_Set_Charge=8,
 	  Temp_Over_Set=55,
 	  Temp_Under_Set=15,
-	  SOC_Under_Set=10,
+	  SOC_Under_Set=5,
 	  SOC_Over_Set=120,
 	  V_Under_Set=39.5,
 	  V_Over_Set=65,
@@ -355,19 +355,21 @@ void TIM2_IRQHandler(void)
   if(VBATT<0) VBATT=-1;
 
   if(UNIQUE_Code == 0xAAAA1){
-	  IBATT = -0.06309346733668010*i_datadigi + 121.153903517579 - OFFSET_SENSOR_ARUS; //modul A fix
-	  IBATT_for_offset_cal = -0.06309346733668010*i_datadigi + 121.153903517579;
+	  IBATT = -0.06249346733668010*i_datadigi + 121.153903517579 - OFFSET_SENSOR_ARUS; //modul A fix
+	  IBATT_for_offset_cal = -0.06249346733668010*i_datadigi + 121.153903517579;
+
+//	  IBATT = -0.06309346733668010*i_datadigi + 121.153903517579 - OFFSET_SENSOR_ARUS; //modul A fix
+//	  IBATT_for_offset_cal = -0.06309346733668010*i_datadigi + 121.153903517579;
 //	  IBATT=0.95556329728489100*IBATT + 0.06243330788446070;// Modul A Recalibrate
   }
   else if (UNIQUE_Code == 0xBBBB1){
-	  IBATT=-0.0399033588118257*i_datadigi + 77.0576930186035 - OFFSET_SENSOR_ARUS; // Modul B fix
-	  IBATT_for_offset_cal= -0.0399033588118257*i_datadigi + 77.0576930186035;
+	  IBATT=-0.0391033588118257*i_datadigi + 77.0576930186035 - OFFSET_SENSOR_ARUS; // Modul B fix
+	  IBATT_for_offset_cal= -0.0391033588118257*i_datadigi + 77.0576930186035;
+
+//	  IBATT=-0.0399033588118257*i_datadigi + 77.0576930186035 - OFFSET_SENSOR_ARUS; // Modul B fix
+//	  IBATT_for_offset_cal= -0.0399033588118257*i_datadigi + 77.0576930186035;
 //	  IBATT = 0.78010345267720400*IBATT + 0.02604389098500030; //recalibrate module B
   }
-
-
-
-
 
   if(hitung_suhu>=max_hitung_suhu)
   {

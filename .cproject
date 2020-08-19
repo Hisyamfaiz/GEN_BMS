@@ -49,6 +49,7 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Moh Hisyam Faiz\STM32Cube\Repository\STM32Cube_FW_F1_V1.8.0\Drivers\CMSIS\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\Moh Hisyam Faiz\STM32Cube\Repository\STM32Cube_FW_F1_V1.8.0\Drivers\CMSIS\Device\ST\STM32F1xx\Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/stm32f103rbt_adc/Core/Inc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Moh Hisyam Faiz\STM32Cube\Repository\STM32Cube_FW_F1_V1.8.0\Drivers\STM32F1xx_HAL_Driver\Inc\Legacy&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.613742686" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>

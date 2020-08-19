@@ -15,6 +15,7 @@ extern CAN_HandleTypeDef	hcan;
 CAN_TxHeaderTypeDef			Tx_Header;
 CAN_RxHeaderTypeDef 		Rx_Header;
 
+uint32_t					delay_TICK2, delay_TICK1;
 uint32_t 					panjang,lebar,z;
 uint8_t               		Tx_data[8];
 uint32_t              		TxMailbox;
@@ -107,14 +108,15 @@ uint8_t				Handshaking = 0,
 					identified = 0,
 					Delay_Charger = 0,
 					Ready_toCharge = 0,
-					flag_Check_SOCawal = 0;
+					flag_Check_SOCawal = 0,
+					flag_bypass = 0;
 
 void BMS_CAN_Tx()
 {
 		int i;
 		Batt_voltage.m_uint16_t=VBATT*100;
 		Batt_current.m_uint16_t=(IBATT+50)*100;
-		Batt_SOC.m_uint16_t=SOC_manipulasi*100;
+		Batt_SOC.m_uint16_t=Pack_SOC*100;
 //		Batt_SOC.m_uint16_t=(int)SOC_manipulasi;	default Data SOC
 
 		Tmax=Suhu_T1;
@@ -147,10 +149,12 @@ void BMS_CAN_Tx()
 
 		//CAN Tx message #1
 		Tx_Header.DLC = 8;
-		uint32_t delay_TICK1 = HAL_GetTick();
+		delay_TICK1 = HAL_GetTick();
 		while(!HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
-			if(HAL_GetTick() - delay_TICK1 > 3000)
+			if(HAL_GetTick() - delay_TICK1 > 1000){
+				HAL_CAN_AbortTxRequest(&hcan, TxMailbox);
 				break;
+			}
 		}
 
 		if(HAL_CAN_AddTxMessage(&hcan, &Tx_Header, Tx_data, &TxMailbox)!= HAL_OK) {
@@ -189,10 +193,12 @@ void BMS_CAN_Tx()
 
 		//CAN Tx message #2
 		Tx_Header.DLC = 8;
-		uint32_t delay_TICK2 = HAL_GetTick();
+		delay_TICK2 = HAL_GetTick();
 		while(!HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
-			if(HAL_GetTick() - delay_TICK2 > 3000)
+			if(HAL_GetTick() - delay_TICK2 > 1000){
+				HAL_CAN_AbortTxRequest(&hcan, TxMailbox);
 				break;
+			}
 		}
 
 		if(HAL_CAN_AddTxMessage(&hcan, &Tx_Header, Tx_data, &TxMailbox)!= HAL_OK) {
@@ -319,12 +325,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 				i=1000;
 				while(i>1) i--;
 
-				if(Pack_SOC < 90 && flag_Check_SOCawal != 1) {
+				if(Pack_SOC < 100 && flag_Check_SOCawal != 1) {
 					Ready_toCharge = 1;
 					flag_Check_SOCawal = 1;
 					oke=9;
 				}
-				else if(Pack_SOC >= 90 && flag_Check_SOCawal != 1) {
+				else if(Pack_SOC >= 100 && flag_Check_SOCawal != 1) {
 					Ready_toCharge = 0;
 					flag_Check_SOCawal = 1;
 					oke=8;
@@ -346,7 +352,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 			}
 		}
 
-		if(Rx_Header.StdId==0x1B2 && Handshaking == 0){	//activate BMS
+		if(Rx_Header.StdId==0x1B2 ){	//activate BMS
 
 			if((Rx_data[0]&0x01) == 1)  //without handshake
 			{
@@ -354,13 +360,23 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 				flag_start_shutdown=1;
 				BMS_mode=(Rx_data[0]>>1)&0x03;
 				Handshaking=1; identified=1;
+				flag_bypass = 1;
 			}
 
-			if((Rx_data[7]&0x01) == 1 && Rx_data[1]==0) //with hs
+			if((Rx_data[7]&0x01) == 1 && Rx_data[1]==0 && Handshaking == 0) //with hs
 			{
 				flag_start_shutdown=1;
 				BMS_mode=0;
 				oke=1;
+			}
+			if((Rx_data[0]&0x01) == 0 && flag_bypass == 1){
+				Rx_Header.StdId = 0;
+				Handshaking=0;
+				identified=0;
+				flag_start_shutdown=0;
+				BMS_mode=0;
+				BATT_State=STATE_STANDBY;
+				flag_bypass = 0;
 			}
 		}
 

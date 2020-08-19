@@ -70,7 +70,7 @@ extern float v_datadigi,i_datadigi,vn_datadigi,ref_datadigi;
 extern float VBATT, IBATT;
 
 float Pack_SOC,	SOC_manipulasi, Delta_VCell,Bat_Pow_Out;
-float Pack_Cap=22.95;
+float Pack_Cap=21.116;//hasil
 uint16_t LifeTime;
 uint8_t BATT_State;
 float persen_imbalance;
@@ -139,12 +139,11 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-   HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -197,8 +196,6 @@ int main(void)
   flag_start_shutdown=0;
 
   /* USER CODE END 2 */
- 
- 
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -232,7 +229,7 @@ int main(void)
 		  	  // Balancing Process
 		  	  if((IBATT<-0.1 && (v_cell_tot>VBATT_BALANCE_START)) || Flag_Force_Balance==1)     //arus charging 0.1 tidak perlu di balancing
 		  	  {
-		  		  LTC681x_balance_cell(balance_status);
+		  		  LTC681x_balance_cell(1040);
 		  	  }
 		  	  else
 		  	  {
@@ -437,7 +434,7 @@ void BMS_ScreenMode_RUN(void)
 		SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
 
 
-		sprintf(pesan,"%d-%d-- %4.2f | %4.0f",fault_code,last_fault_code,Isc, AH_Total);
+		sprintf(pesan,"%d-%d--%4.2f| %5.0f",fault_code,last_fault_code,Isc, AH_Total);
 		SSD1306_GotoXY(0,50);
 		SSD1306_Puts(pesan, &Font_7x10, SSD1306_COLOR_WHITE);
 
