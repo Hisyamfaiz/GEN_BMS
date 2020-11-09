@@ -97,7 +97,7 @@ float T_I_Over_trip,
 	  T_I_Over_trip_cycle;
 
 
-float I_Over_Set=20,
+float I_Over_Set=15,
 	  I_Over_Set_Charge=8,
 	  Temp_Over_Set=55,
 	  Temp_Under_Set=15,
@@ -144,6 +144,7 @@ float OFFSET_SENSOR_ARUS,IBATT_for_offset_cal;
 /* USER CODE BEGIN PFP */
 void Batt_Protection_when_discharge(void);
 void Batt_Protection_when_charge(void);
+void Batt_Protection_when_chargedischarge(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -396,9 +397,14 @@ void TIM2_IRQHandler(void)
 		 Batt_Protection_when_discharge();
 	  }
 
-	  if(BATT_State==STATE_CHARGE)
+	  else if(BATT_State==STATE_CHARGE)
 	  {
 		  Batt_Protection_when_charge();
+	  }
+
+	  else if(BATT_State==STATE_FULL_CHARGE_DISCHARGE)
+	  {
+		  Batt_Protection_when_chargedischarge();
 	  }
 
 
@@ -843,6 +849,239 @@ void Batt_Protection_when_charge(void)
 				    	  if(T_trip_cycle<0) T_trip_cycle=0;
 				    	  if(T_I_Over_trip_cycle<0) T_I_Over_trip_cycle=0;
 				     }
+}
+
+void Batt_Protection_when_chargedischarge(void)
+{
+	// Short circuit protection
+	if(IBATT > (VBATT/0.9)) {
+		Isc=IBATT;
+		Vsc=VBATT;
+		fault_code=12;
+		Batt_Open_Mode();
+		flag_trip_shortcircuit=ON;
+		HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+	  }
+
+	// Under Voltage protection
+	else if(VBATT < V_Under_Set && flag_trip_undervoltage == OFF ) { //Indikasi terjadi Undervoltage
+		fault_code=1;
+		T_Under_trip=TMS/(1-(VBATT/V_Under_Set));
+		T_trip_cycle+=0.001;
+
+		if(T_trip_cycle>T_Under_trip && flag_trip_undervoltage==OFF) {
+			Batt_Open_Mode();
+			T_trip_cycle=T_Under_trip;
+			flag_trip_undervoltage=ON;
+			HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+		}
+
+		if(flag_trip_undervoltage==OFF) {
+			if(T_Under_trip-T_trip_cycle>15) {
+				if((test_tim2%1000)==0)
+				{
+					BUZZ_Toggle;
+					test_tim2=0;
+				}
+			}
+			else if(T_Under_trip-T_trip_cycle>10)
+			{
+				if((test_tim2%100)==0)
+				{
+					BUZZ_Toggle;
+					test_tim2=0;
+				}
+			}
+			else if(T_Under_trip-T_trip_cycle>1)
+			{
+				HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_SET);
+			}
+		}
+	}
+
+	// Over Current Protection
+	else if((IBATT-I_Over_Set)>0 && flag_trip_overcurrentdischarge==OFF)   //Indikasi terjadi Over Current
+	{
+		fault_code=2;
+		T_I_Over_trip=TMS_I_Over/((IBATT/I_Over_Set)-1);
+		T_I_Over_trip_cycle+=0.001;
+
+		if(T_I_Over_trip_cycle>T_I_Over_trip && flag_trip_overcurrentdischarge==OFF)
+		{
+			Batt_Open_Mode();
+			T_I_Over_trip_cycle=T_I_Over_trip;
+			flag_trip_overcurrentdischarge=ON;
+			HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+		}
+		if(flag_trip_overcurrentdischarge==OFF)
+		{
+			if(T_I_Over_trip-T_I_Over_trip_cycle>15)
+			{
+				if((test_tim2%1000)==0)
+				{
+					BUZZ_Toggle;
+					test_tim2=0;
+				}
+			}
+			else if(T_I_Over_trip-T_I_Over_trip_cycle>10)
+			{
+				if((test_tim2%100)==0)
+				{
+					BUZZ_Toggle;
+					test_tim2=0;
+				}
+			}
+			else if(T_I_Over_trip-T_I_Over_trip_cycle>1)
+			{
+				HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_SET);
+			}
+		}
+	}
+
+	//** Over Temperature protection
+	else if(((50-Suhu_T1 < 10)||(85-Suhu_T2 < 10)||(50-Suhu_T3 < 10)||(85-Suhu_T4 < 10)) && flag_trip_overtemperature==OFF)
+	{
+	  fault_code=3;
+	  if(Suhu_T1>Temp_Over_Set-10 && Suhu_T1<=Temp_Over_Set-5)
+	  {
+		  if((test_tim2%1000)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Suhu_T1>Temp_Over_Set-5 && Suhu_T1<=Temp_Over_Set-2)
+	  {
+		  if((test_tim2%500)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Suhu_T1>Temp_Over_Set-2 && Suhu_T1<=Temp_Over_Set)
+	  {
+		  if((test_tim2%500)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Suhu_T1>50||Suhu_T2>85||Suhu_T3>50||Suhu_T4>85)
+	  {
+		  Batt_Open_Mode();
+		  flag_trip_overtemperature=ON;
+		  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+	  }
+	}
+
+	//** Under Temperature protection
+	else if((Suhu_T1-Temp_Under_Set<=10||Suhu_T2-Temp_Under_Set<=10||Suhu_T3-Temp_Under_Set<=10||Suhu_T4-Temp_Under_Set<=10) && flag_trip_undertemperature==OFF)
+	{
+	  fault_code=4;
+	  if(Suhu_T1<=Temp_Under_Set+10 && Suhu_T1>Temp_Under_Set+5)
+	  {
+		  if((test_tim2%1000)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Suhu_T1<=Temp_Under_Set+5 && Suhu_T1>Temp_Under_Set+2)
+	  {
+		  if((test_tim2%500)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Suhu_T1<Temp_Under_Set+2 && Suhu_T1>=Temp_Under_Set)
+	  {
+		  if((test_tim2%500)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Suhu_T1<Temp_Under_Set||Suhu_T2<Temp_Under_Set||Suhu_T3<Temp_Under_Set||Suhu_T4<Temp_Under_Set)
+	  {
+		  Batt_Open_Mode();
+		  flag_trip_undertemperature=ON;
+		  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+	  }
+	}
+
+	//** SOC OverDischarge protection
+	else if(Pack_SOC-SOC_Under_Set<=10 && flag_trip_SOCOverDischarge==OFF && BATT_State==STATE_DISCHARGE)
+	{
+	  fault_code=5;
+	  if(Pack_SOC<=SOC_Under_Set+10 && Pack_SOC>SOC_Under_Set+5)
+	  {
+		  if((test_tim2%1000)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Pack_SOC<=SOC_Under_Set+5 && Pack_SOC>SOC_Under_Set+2)
+	  {
+		  if((test_tim2%500)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Pack_SOC<SOC_Under_Set+2 && Pack_SOC>=SOC_Under_Set)
+	  {
+		  if((test_tim2%500)==0)
+		  {
+			  BUZZ_Toggle;
+			  test_tim2=0;
+		  }
+	  }
+	  else if(Pack_SOC<SOC_Under_Set)
+	  {
+		  Batt_Open_Mode();
+		  flag_trip_SOCOverDischarge=ON;
+		  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+	  }
+	}
+
+	//** Imbalance Protection
+	else if(Persen_Imbalance_Set-persen_imbalance<10)
+	{
+	  fault_code=6;
+	  if(persen_imbalance>Persen_Imbalance_Set)
+	  {
+		flag_trip_unbalance=ON;
+		Batt_Open_Mode();
+	  }
+	}
+
+//	//** Over Voltage Protection
+//	else if(VBATT>V_Over_Set)
+//	{
+//		fault_code=11;
+//		flag_trip_overvoltage=ON;
+//		Batt_Open_Mode();
+//	}
+
+	//Clearing when data status is normal before system trip
+	else
+	{
+	  if(fault_code!=0) last_fault_code=fault_code;
+	  fault_code=0;
+	  HAL_GPIO_WritePin(BUZZ_GPIO_Port, BUZZ_Pin, GPIO_PIN_RESET);
+	  T_Under_trip=0;
+	  T_trip_cycle=T_trip_cycle-0.001;
+	  T_I_Over_trip_cycle-=0.001;
+	  if(T_trip_cycle < 0)
+		  T_trip_cycle=0;
+	  if(T_I_Over_trip_cycle < 0)
+		  T_I_Over_trip_cycle=0;
+	}
+
+
+
 }
 
 
