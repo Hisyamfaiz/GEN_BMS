@@ -50,8 +50,8 @@ void BMS_ON_InitBeep(void);
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
-#define	UNIQUE_Code 0xAAAA1
-//#define	UNIQUE_Code 0xBBBB1
+//#define	UNIQUE_Code 0xAAAA1
+#define	UNIQUE_Code 0xBBBB1
 
 extern uint8_t 		flag_trip_overtemperature,
 					flag_trip_undertemperature,

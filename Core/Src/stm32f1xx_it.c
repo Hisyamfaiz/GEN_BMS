@@ -91,13 +91,13 @@ float T_Under_trip,
 uint8_t Clear_Trip_undervoltage,
 		Clear_Trip_overcurrentdischarge;
 
-float TMS_I_Over=0.5;
+float TMS_I_Over=120;
 
 float T_I_Over_trip,
 	  T_I_Over_trip_cycle;
 
 
-float I_Over_Set=12,
+float I_Over_Set=20,
 	  I_Over_Set_Charge=8,
 	  Temp_Over_Set=55,
 	  Temp_Under_Set=15,
@@ -368,7 +368,7 @@ void TIM2_IRQHandler(void)
 
 //	  IBATT=-0.0399033588118257*i_datadigi + 77.0576930186035 - OFFSET_SENSOR_ARUS; // Modul B fix
 //	  IBATT_for_offset_cal= -0.0399033588118257*i_datadigi + 77.0576930186035;
-//	  IBATT = 0.78010345267720400*IBATT + 0.02604389098500030; //recalibrate module B
+	  IBATT = 0.78010345267720400*IBATT + 0.02604389098500030; //recalibrate module B
   }
 
   if(hitung_suhu>=max_hitung_suhu)
@@ -537,7 +537,7 @@ void Batt_Protection_when_discharge(void)
 			  	  else if((IBATT-I_Over_Set)>0 && flag_trip_overcurrentdischarge==OFF)   //Indikasi terjadi Over Current
 			  	  {
 			  		fault_code=2;
-			  		T_I_Over_trip=TMS_I_Over/((IBATT/10.9)-1);
+			  		T_I_Over_trip=TMS_I_Over/((IBATT/I_Over_Set)-1);
 			  		T_I_Over_trip_cycle+=0.001;
 
 			  		if(T_I_Over_trip_cycle>T_I_Over_trip && flag_trip_overcurrentdischarge==OFF)

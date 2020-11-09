@@ -229,7 +229,7 @@ int main(void)
 		  	  // Balancing Process
 		  	  if((IBATT<-0.1 && (v_cell_tot>VBATT_BALANCE_START)) || Flag_Force_Balance==1)     //arus charging 0.1 tidak perlu di balancing
 		  	  {
-		  		  LTC681x_balance_cell(1040);
+		  		  LTC681x_balance_cell(balance_status);
 		  	  }
 		  	  else
 		  	  {
