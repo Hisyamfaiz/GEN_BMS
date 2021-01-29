@@ -17,7 +17,6 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
@@ -25,7 +24,6 @@
 #include "dma.h"
 #include "i2c.h"
 #include "iwdg.h"
-#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -163,14 +161,13 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_CAN_Init();
-  MX_I2C1_Init();
   MX_I2C2_Init();
-  MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_IWDG_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   //USART3 untuk RS485, tidak digunakan untuk BOARD v1.
 
@@ -229,7 +226,7 @@ int main(void)
 		  	  // Balancing Process
 		  	  if((IBATT<-0.1 && (v_cell_tot>VBATT_BALANCE_START)) || Flag_Force_Balance==1)     //arus charging 0.1 tidak perlu di balancing
 		  	  {
-		  		  LTC681x_balance_cell(balance_status);
+		  		  LTC681x_balance_cell(2052);
 		  	  }
 		  	  else
 		  	  {
@@ -263,7 +260,8 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
@@ -276,7 +274,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -527,7 +525,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
