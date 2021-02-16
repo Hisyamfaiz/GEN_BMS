@@ -1,3 +1,0 @@
-CANbus.c:114:6:BMS_CAN_Tx	16	static
-CANbus.c:312:6:HAL_CAN_RxFifo0MsgPendingCallback	24	static
-CANbus.c:405:6:BMS_CAN_Config	48	static
